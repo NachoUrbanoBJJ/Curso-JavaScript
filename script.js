@@ -1,99 +1,222 @@
 const vinos = [
-    {nombre: 'Malbec Reserva', tipo: 'Tinto', precio: 15500},
-    {nombre: 'chardonnay', tipo: 'Blanco', precio:4500},
-    {nombre: 'Pinot Noir', tipo:'Tinto', precio:10500},
-    {nombre: 'Suavignon Blanc', tipo:'Blanco', precio:6500},
-    {nombre: 'Rosé de Syrak', tipo:'Rosado', precio:12000},
-    {nombre: 'Prosecco', tipo:'Espumoso', precio:16000},
-    {nombre: 'Cabernet Suavignon', tipo:'Tinto', precio:12500},
+    {
+        nombre: 'Trumpeter Reserva Malbec',
+        tipo: 'tinto',
+        precio: 19000,
+        imagen: 'Trumpeter Reserva Malbec Estuche 750ml- Estuche De Regalo  - $ 19_000.jpeg'
+    },
+    {
+        nombre: 'Príncipe de Viana Chardonnay',
+        tipo: 'blanco',
+        precio: 7000,
+        imagen: 'Príncipe de Viana Chardonnay.jpeg'
+    },
+    {
+        nombre: 'Trumpeter Pinot Noir',
+        tipo: 'tinto',
+        precio: 50000,
+        imagen: 'Trumpeter Pinot Noir.jpeg'
+    },
+    {
+        nombre: 'El maestro Suavignon Blanc',
+        tipo: 'blanco',
+        precio: 9000,
+        imagen: 'El maestro Suavignon Blanc.jpeg'
+    },
+    {
+        nombre: 'Vino SAURUS Rose de syrak',
+        tipo: 'rosado',
+        precio: 12000,
+        imagen: 'Vino SAURUS Rose de syrak.jpeg'
+    },
+    {
+        nombre: 'Prosecco DOC Extra Dry',
+        tipo: 'espumoso',
+        precio: 30000,
+        imagen: 'Prosecco DOC Extra Dry - Viticoltori Ponte #etichette_vino #Francescon #Collodi.jpeg'
+    },
+    {
+        nombre: 'Vinho Latitud 33° Cabernet Sauvignon',
+        tipo: 'tinto',
+        precio: 40000,
+        imagen: 'Vinho Latitud 33° Cabernet Sauvignon 2019 Terrazas de Los Andes.jpeg'
+    }
 ];
-function filtrarVinos(tipo) {
-  const vinosFiltrados = vinos.filter(vino => vino.tipo === tipo);
-  const listaVinos = document.getElementById('listaVinos');
-  listaVinos.innerHTML = '';
 
-  if (vinosFiltrados.length > 0) {
-    vinosFiltrados.forEach(vino => {
-      const li = document.createElement('li');
-      li.textContent = `${vino.nombre} - $${vino.precio}`;
-      listaVinos.appendChild(li);
+// Función para generar cards de vinos
+function generarCards(tipo = 'todos') {
+    const vinosElement = document.querySelector('.vinos');
+    if (!vinosElement) return;
+    
+    vinosElement.innerHTML = '';
+
+    const vinosFiltrados = vinos.filter(vino => {
+        if (!tipo || tipo === 'todos') return true;
+        return vino.tipo.toLowerCase() === tipo.toLowerCase();
     });
-    if (vinosFiltrados === 0) {
-      listaVinos.innerHTML = '<p class= "text.center"> No hay vinos disponibles en esta seccion.</p>'
+
+    vinosFiltrados.forEach(vino => {
+        const vinoElement = document.createElement('div');
+        vinoElement.classList.add('vino');
+        
+        // Crear la URL de la imagen de forma segura
+        const imagenUrl = `./assets/img/${encodeURIComponent(vino.imagen)}`;
+        
+        vinoElement.innerHTML = `
+            <div class="imagen-container">
+                <img src="${imagenUrl}" alt="${vino.nombre}" 
+                     onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'no-imagen\'>Imagen no disponible</div>'">
+            </div>
+            <div class="info">
+                <h2 class="titulo">${vino.nombre}</h2>
+                <p class="descripcion">Vino ${vino.tipo} ${vino.nombre}</p>
+                <div class="precio">$${vino.precio}</div>
+                <button class="agregar-carrito">Agregar al carrito</button>
+            </div>
+        `;
+        vinosElement.appendChild(vinoElement);
+    });
+
+    // Agregar eventos a los botones de agregar al carrito
+    const botonesAgregarCarrito = document.querySelectorAll('.agregar-carrito');
+    botonesAgregarCarrito.forEach(boton => {
+        boton.addEventListener('click', () => {
+            const vino = {
+                nombre: boton.parentNode.querySelector('.titulo').textContent,
+                precio: parseFloat(boton.parentNode.querySelector('.precio').textContent.replace('$', '')),
+                tipo: boton.parentNode.querySelector('.descripcion').textContent.split(' ')[1]
+            };
+            agregarAlCarrito(vino);
+        });
+    });
+}
+
+// Array de almacenamiento de productos
+let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+// Agregar al carrito
+function agregarAlCarrito(vino) {
+    carrito.push(vino);
+    guardarCarrito();
+    actualizarCarrito();
+}
+
+// Actualizar el carrito
+function actualizarCarrito() {
+    const carritoLista = document.getElementById('carrito-lista');
+    if (!carritoLista) return;
+    
+    carritoLista.innerHTML = '';
+
+    let total = 0;
+
+    carrito.forEach((vino, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <div class="item-carrito">
+                <span class="nombre-vino">${vino.nombre}</span>
+                <span class="precio-vino">$${vino.precio}</span>
+                <button class="btn-eliminar">Eliminar</button>
+            </div>
+        `;
+        
+        const botonEliminar = li.querySelector('.btn-eliminar');
+        botonEliminar.addEventListener('click', () => {
+            eliminarDelCarrito(index);
+        });
+        
+        carritoLista.appendChild(li);
+        total += vino.precio;
+    });
+
+    // Actualizar ambos totales
+    const totalElement = document.getElementById('total');
+    if (totalElement) {
+        totalElement.textContent = `Total: $${total}`;
     }
-  } else {
-    alert(`No hay vinos de tipo ${tipo} disponibles.`);
-  }
 }
 
-const nombreUsuario = prompt("¿Cuál es tu nombre?");
-if (nombreUsuario) {
-  alert(`Hola, ${nombreUsuario}!`);
-  const deseaVerVinos = confirm("¿Deseas ver los vinos disponibles?");
-  if (deseaVerVinos) {
-    alert("A continuación, te mostramos los vinos disponibles.");
-
-  } else {
-    alert("Entendido, que tengas un buen día.");
-  }
-} else {
-  alert("No se proporcionó un nombre.");
+// Función para eliminar del carrito
+function eliminarDelCarrito(index) {
+    carrito.splice(index, 1);
+    guardarCarrito();
+    actualizarCarrito();
 }
 
-//Pedir la edad del usuario
-const edad = Number(prompt("Por favor, introduzca su edad:"));
-
-if (isNaN(edad) || edad <= 0 ) {
-    alert("Por favor, ingrese una edad valida.");
-} else if (edad <18) {
-    alert("Eres menor de edad, no se te permitira interactuar con la pagina.");
-    //Ocultar o deshabilitar seccion de vinos
-    document.getElementById('listaVinos').style.display = 'none';
-} else {
-    alert("Bienvenido a la Vinoteca,");
-    document.getElementById('listaVinos').style.display = 'block';
+// Función para guardar el carrito en localStorage
+function guardarCarrito() {
+    localStorage.setItem('carrito', JSON.stringify(carrito));
 }
 
-console.log(nombreUsuario);
-
-function ordenarVinosPorPrecio(vinosFiltrados) {
-  return vinosFiltrados.sort((a, b) => a.precio - b.precio);
-}
-//Pequeño cuestionario
-const preguntas = [
-  {
-    pregunta:"¿Cual es el tipo de vino mas vendido en Argentina?",
-    opciones: ["Malbec", "Cabernet Suavignon", "Syrah", "Chardonnay"],
-    respuestaCorrecta:1
-  },
-  {
-    pregunta: "¿Que tipo de vino es un Prosecco?",
-    opciones: ["Tinto", "Blanco", "Rosado", "Espumoso"],
-    respuestaCorrecta:3
-  },
-  {
-    pregunta:"¿Cual es el pais de origen del Chardonnay?",
-    opciones: ["Argentina", "Francia", "Italia", "España"],
-    respuestaCorrecta:1
-  }
-];
-function iniciarCuestionario() {
-  let respuestasCorrectas = 0;
-
-  preguntas.forEach((pregunta, index) => {
-    const respuesta = prompt(
-      `${pregunta.pregunta}\n\n` +
-      pregunta.opciones.map((opcion, i) => `${i + 1}. ${opcion}`).join("\n") +
-      `\n\nIngresa el número de tu respuesta (1-${pregunta.opciones.length}):`
-    );
-
-    if (parseInt(respuesta) - 1 === pregunta.respuestaCorrecta) {
-      respuestasCorrectas++;
+// Evento para el botón de vaciar carrito
+document.addEventListener('DOMContentLoaded', () => {
+    // Inicializar el carrito
+    const carritoElement = document.getElementById('carrito');
+    if (carritoElement) {
+        carritoElement.style.display = 'block';
     }
-  });
 
-  alert(`Has respondido correctamente ${respuestasCorrectas} de ${preguntas.length} preguntas.`);
-}
+    // Evento para el botón de pagar
+    const botonPagar = document.getElementById('pagar');
+    const opcionesPagoElement = document.getElementById('opciones-pago');
+    
+    if (botonPagar && opcionesPagoElement) {
+        botonPagar.addEventListener('click', () => {
+            if (carrito.length === 0) {
+                alert('El carrito está vacío');
+                return;
+            }
+            opcionesPagoElement.style.display = 'block';
+        });
+    }
 
-iniciarCuestionario();
+    const botonesFiltro = document.querySelectorAll('.filtro');
+    botonesFiltro.forEach(boton => {
+        boton.addEventListener('click', () => {
+            const tipo = boton.getAttribute('data-filtro');
+            if (tipo) {
+                generarCards(tipo);
+            }
+        });
+    });
 
+    // Generar cards iniciales
+    generarCards();
+
+    // Cargar carrito al iniciar
+    actualizarCarrito();
+
+    // Evento para vaciar carrito
+    const botonVaciar = document.getElementById('vaciar-carrito');
+    if (botonVaciar) {
+        botonVaciar.addEventListener('click', () => {
+            carrito = [];
+            guardarCarrito();
+            actualizarCarrito();
+            if (opcionesPagoElement) {
+                opcionesPagoElement.style.display = 'none';
+            }
+        });
+    }
+
+    // Eventos para opciones de pago
+    const opcionesPago = {
+        'tarjeta': 'Pago con tarjeta',
+        'efectivo': 'Pago con efectivo',
+        'transferencia': 'Pago con transferencia',
+        'paypal': 'Pago con PayPal',
+        'mercadopago': 'Pago con Mercado Pago'
+    };
+
+    Object.keys(opcionesPago).forEach(metodo => {
+        const boton = document.getElementById(metodo);
+        if (boton) {
+            boton.addEventListener('click', () => {
+                alert(opcionesPago[metodo]);
+                if (opcionesPagoElement) {
+                    opcionesPagoElement.style.display = 'none';
+                }
+            });
+        }
+    });
+});
