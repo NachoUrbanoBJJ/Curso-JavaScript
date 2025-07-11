@@ -1,222 +1,181 @@
-const vinos = [
+//VINOS TINTOS
+const productos = [
     {
-        nombre: 'Trumpeter Reserva Malbec',
-        tipo: 'tinto',
-        precio: 19000,
-        imagen: 'Trumpeter Reserva Malbec Estuche 750ml- Estuche De Regalo  - $ 19_000.jpeg'
+        id: "vino-01",
+        titulo: "Trumpeter Pinot Noir",
+        imagen: "./assets/img/Trumpeter Pinot Noir.jpeg",
+        categoria: {
+            nombre: "Vinos Tintos",
+            id: "Vinos-Tintos"
+        },
+        precio:15000
     },
     {
-        nombre: 'Príncipe de Viana Chardonnay',
-        tipo: 'blanco',
-        precio: 7000,
-        imagen: 'Príncipe de Viana Chardonnay.jpeg'
+        id: "vino-02",
+        titulo: "Trumpeter Reserva Malbec",
+        imagen: "./assets/img/Trumpeter Reserva Malbec Estuche 750ml- Estuche De Regalo  - $ 19_000.jpeg",
+        categoria: {
+            nombre: "Vinos Tintos",
+            id: "Vinos-Tintos"
+        },
+        precio:25000
     },
     {
-        nombre: 'Trumpeter Pinot Noir',
-        tipo: 'tinto',
-        precio: 50000,
-        imagen: 'Trumpeter Pinot Noir.jpeg'
+        id: "vino-03",
+        titulo: "Latitud 33° Cabernet",
+        imagen: "./assets/img/Vinho Latitud 33° Cabernet Sauvignon 2019 Terrazas de Los Andes.jpeg",
+        categoria: {
+            nombre: "Vinos Tintos",
+            id: "Vinos-Tintos"
+    },
+        precio:20000
+    },
+        {
+        id: "vino-04",
+        titulo: "Cansillero del diablo",
+        imagen: "./assets/img/Casillero del diablo.jpeg",
+        categoria: {
+            nombre: "Vinos Tintos",
+            id: "Vinos-Tintos"
+    },
+        precio:20000
+    },
+    //Vinos blancos
+    {
+        id: "vino-blanco-01",
+        titulo: "El Maestro Suavignon",
+        imagen: "./assets/img/El maestro Suavignon Blanc.jpeg",
+        categoria: {
+            nombre: "Vinos Blancos",
+            id: "Vinos-Blancos"
+    },
+        precio:10000
     },
     {
-        nombre: 'El maestro Suavignon Blanc',
-        tipo: 'blanco',
-        precio: 9000,
-        imagen: 'El maestro Suavignon Blanc.jpeg'
+        id: "vino-blanco-02",
+        titulo: "Principe de Viana Chardonnay",
+        imagen: "./assets/img/Príncipe de Viana Chardonnay.jpeg",
+        categoria: {
+            nombre: "Vinos Blancos",
+            id: "Vinos-Blancos"
+    },
+        precio:17000
+    },
+    //Espumosos
+       {
+        id: "vino-espumoso-01",
+        titulo: "Saurus Rose de Syrak",
+        imagen: "./assets/img/Vino SAURUS Rose de syrak.jpeg",
+        categoria: {
+            nombre: "Vinos Espumosos",
+            id: "Vinos-Espumosos"
+    },
+        precio:10000
     },
     {
-        nombre: 'Vino SAURUS Rose de syrak',
-        tipo: 'rosado',
-        precio: 12000,
-        imagen: 'Vino SAURUS Rose de syrak.jpeg'
+        id: "vino-espumoso-02",
+        titulo: "Riccadonna Prosecco Espumoso",
+        imagen: "./assets/img/VINO ESPUMOSO RICCADONNA PROSECCO 750 ML.jpeg",
+        categoria: {
+            nombre: "Vinos Espumosos",
+            id: "Vinos-Espumosos"
     },
-    {
-        nombre: 'Prosecco DOC Extra Dry',
-        tipo: 'espumoso',
-        precio: 30000,
-        imagen: 'Prosecco DOC Extra Dry - Viticoltori Ponte #etichette_vino #Francescon #Collodi.jpeg'
-    },
-    {
-        nombre: 'Vinho Latitud 33° Cabernet Sauvignon',
-        tipo: 'tinto',
-        precio: 40000,
-        imagen: 'Vinho Latitud 33° Cabernet Sauvignon 2019 Terrazas de Los Andes.jpeg'
+        precio:20000
     }
 ];
 
-// Función para generar cards de vinos
-function generarCards(tipo = 'todos') {
-    const vinosElement = document.querySelector('.vinos');
-    if (!vinosElement) return;
-    
-    vinosElement.innerHTML = '';
+const contenedorProductos = document.querySelector("#contenedor-productos");
+const botonesCategorias = document.querySelectorAll(".boton-categoria");
+const tituloPrincipal = document.querySelector("#titulo-principal");
+let botonesAgregar = document.querySelectorAll(".producto-agregar");
+const numerito = document.querySelector("#numerito");
 
-    const vinosFiltrados = vinos.filter(vino => {
-        if (!tipo || tipo === 'todos') return true;
-        return vino.tipo.toLowerCase() === tipo.toLowerCase();
-    });
+function cargarProductos(productosElegidos) {
 
-    vinosFiltrados.forEach(vino => {
-        const vinoElement = document.createElement('div');
-        vinoElement.classList.add('vino');
-        
-        // Crear la URL de la imagen de forma segura
-        const imagenUrl = `./assets/img/${encodeURIComponent(vino.imagen)}`;
-        
-        vinoElement.innerHTML = `
-            <div class="imagen-container">
-                <img src="${imagenUrl}" alt="${vino.nombre}" 
-                     onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'no-imagen\'>Imagen no disponible</div>'">
-            </div>
-            <div class="info">
-                <h2 class="titulo">${vino.nombre}</h2>
-                <p class="descripcion">Vino ${vino.tipo} ${vino.nombre}</p>
-                <div class="precio">$${vino.precio}</div>
-                <button class="agregar-carrito">Agregar al carrito</button>
-            </div>
+    contenedorProductos.innerHTML = "";
+
+    productosElegidos.forEach(producto => {
+
+        const div = document.createElement("div");
+        div.classList.add("producto");
+        div.innerHTML = `
+            <img class="producto-imagen" src="${producto.imagen}"alt="${producto.titulo}"> 
+              <div class="producto-detalles">
+              <h3 class="producto-titulo">${producto.titulo}</h3>
+              <p class="producto-precio">$${producto.precio}</p>
+              <button class="producto-agregar" id="${producto.id}"> Agregar al carrito</button>
+              </div>
         `;
-        vinosElement.appendChild(vinoElement);
-    });
 
-    // Agregar eventos a los botones de agregar al carrito
-    const botonesAgregarCarrito = document.querySelectorAll('.agregar-carrito');
-    botonesAgregarCarrito.forEach(boton => {
-        boton.addEventListener('click', () => {
-            const vino = {
-                nombre: boton.parentNode.querySelector('.titulo').textContent,
-                precio: parseFloat(boton.parentNode.querySelector('.precio').textContent.replace('$', '')),
-                tipo: boton.parentNode.querySelector('.descripcion').textContent.split(' ')[1]
-            };
-            agregarAlCarrito(vino);
-        });
-    });
+        contenedorProductos.append(div);
+    })
+
+    actualizarBotonesAgregar();
 }
 
-// Array de almacenamiento de productos
-let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    cargarProductos(productos);
 
-// Agregar al carrito
-function agregarAlCarrito(vino) {
-    carrito.push(vino);
-    guardarCarrito();
-    actualizarCarrito();
-}
+botonesCategorias.forEach(boton => {
+    boton.addEventListener("click" , (e) => {
 
-// Actualizar el carrito
-function actualizarCarrito() {
-    const carritoLista = document.getElementById('carrito-lista');
-    if (!carritoLista) return;
-    
-    carritoLista.innerHTML = '';
-
-    let total = 0;
-
-    carrito.forEach((vino, index) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <div class="item-carrito">
-                <span class="nombre-vino">${vino.nombre}</span>
-                <span class="precio-vino">$${vino.precio}</span>
-                <button class="btn-eliminar">Eliminar</button>
-            </div>
-        `;
-        
-        const botonEliminar = li.querySelector('.btn-eliminar');
-        botonEliminar.addEventListener('click', () => {
-            eliminarDelCarrito(index);
-        });
-        
-        carritoLista.appendChild(li);
-        total += vino.precio;
-    });
-
-    // Actualizar ambos totales
-    const totalElement = document.getElementById('total');
-    if (totalElement) {
-        totalElement.textContent = `Total: $${total}`;
-    }
-}
-
-// Función para eliminar del carrito
-function eliminarDelCarrito(index) {
-    carrito.splice(index, 1);
-    guardarCarrito();
-    actualizarCarrito();
-}
-
-// Función para guardar el carrito en localStorage
-function guardarCarrito() {
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-}
-
-// Evento para el botón de vaciar carrito
-document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar el carrito
-    const carritoElement = document.getElementById('carrito');
-    if (carritoElement) {
-        carritoElement.style.display = 'block';
-    }
-
-    // Evento para el botón de pagar
-    const botonPagar = document.getElementById('pagar');
-    const opcionesPagoElement = document.getElementById('opciones-pago');
-    
-    if (botonPagar && opcionesPagoElement) {
-        botonPagar.addEventListener('click', () => {
-            if (carrito.length === 0) {
-                alert('El carrito está vacío');
-                return;
-            }
-            opcionesPagoElement.style.display = 'block';
-        });
-    }
-
-    const botonesFiltro = document.querySelectorAll('.filtro');
-    botonesFiltro.forEach(boton => {
-        boton.addEventListener('click', () => {
-            const tipo = boton.getAttribute('data-filtro');
-            if (tipo) {
-                generarCards(tipo);
-            }
-        });
-    });
-
-    // Generar cards iniciales
-    generarCards();
-
-    // Cargar carrito al iniciar
-    actualizarCarrito();
-
-    // Evento para vaciar carrito
-    const botonVaciar = document.getElementById('vaciar-carrito');
-    if (botonVaciar) {
-        botonVaciar.addEventListener('click', () => {
-            carrito = [];
-            guardarCarrito();
-            actualizarCarrito();
-            if (opcionesPagoElement) {
-                opcionesPagoElement.style.display = 'none';
-            }
-        });
-    }
-
-    // Eventos para opciones de pago
-    const opcionesPago = {
-        'tarjeta': 'Pago con tarjeta',
-        'efectivo': 'Pago con efectivo',
-        'transferencia': 'Pago con transferencia',
-        'paypal': 'Pago con PayPal',
-        'mercadopago': 'Pago con Mercado Pago'
-    };
-
-    Object.keys(opcionesPago).forEach(metodo => {
-        const boton = document.getElementById(metodo);
-        if (boton) {
-            boton.addEventListener('click', () => {
-                alert(opcionesPago[metodo]);
-                if (opcionesPagoElement) {
-                    opcionesPagoElement.style.display = 'none';
-                }
-            });
+        botonesCategorias.forEach(boton => boton.classList.remove("active"));
+        e.currentTarget.classList.add("active");
+        if(e.currentTarget.id != "todos") {
+            const productoCategoria = productos.find(producto => producto.categoria.id === e.currentTarget.id);
+            tituloPrincipal.innerText = productoCategoria.categoria.nombre;
+            const productosBoton = productos.filter(producto => producto.categoria.id === e.currentTarget.id);
+        cargarProductos(productosBoton);
+        } else {
+            tituloPrincipal.innerText = "Todos los productos";
+            cargarProductos(productos);
         }
-    });
+
+
+    }) 
 });
+
+function actualizarBotonesAgregar() {
+     botonesAgregar = document.querySelectorAll(".producto-agregar");
+
+     botonesAgregar.forEach (boton => {
+        boton.addEventListener("click", agregarAlCarrito);
+     });
+}
+let productosEnCarrito;
+
+let productosEnCarritoLS = localStorage.getItem("productos-en-carrito");
+
+if (productosEnCarritoLS) {
+    productosEnCarrito = JSON.parse(productosEnCarritoLS);
+    actualizarNumerito();
+} else {
+    productosEnCarrito = [];
+}
+
+
+
+function agregarAlCarrito(e){
+    const idBoton = e.currentTarget.id;
+    const productoAgregado = productos.find(producto => producto.id === idBoton);
+
+    if(productosEnCarrito.some(producto => producto.id === idBoton)){
+        const index = productosEnCarrito.findIndex(producto => producto.id === idBoton);
+        productosEnCarrito[index].cantidad++;
+    } else {
+
+        const nuevoProducto = {
+    ...productoAgregado,
+    cantidad: 1
+    };
+    productosEnCarrito.push(nuevoProducto);
+    }
+
+    actualizarNumerito();
+
+    localStorage.setItem("productos-en-carrito", JSON.stringify(productosEnCarrito));
+}
+
+function actualizarNumerito() {
+    let nuevoNumerito = productosEnCarrito.reduce((acc, producto) => acc + producto.cantidad, 0);
+    numerito.innerText = nuevoNumerito;
+}
