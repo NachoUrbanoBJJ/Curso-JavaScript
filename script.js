@@ -1,88 +1,11 @@
-//VINOS TINTOS
-const productos = [
-    {
-        id: "vino-01",
-        titulo: "Trumpeter Pinot Noir",
-        imagen: "./assets/img/Trumpeter Pinot Noir.jpeg",
-        categoria: {
-            nombre: "Vinos Tintos",
-            id: "Vinos-Tintos"
-        },
-        precio:15000
-    },
-    {
-        id: "vino-02",
-        titulo: "Trumpeter Reserva Malbec",
-        imagen: "./assets/img/Trumpeter Reserva Malbec Estuche 750ml- Estuche De Regalo  - $ 19_000.jpeg",
-        categoria: {
-            nombre: "Vinos Tintos",
-            id: "Vinos-Tintos"
-        },
-        precio:25000
-    },
-    {
-        id: "vino-03",
-        titulo: "Latitud 33° Cabernet",
-        imagen: "./assets/img/Vinho Latitud 33° Cabernet Sauvignon 2019 Terrazas de Los Andes.jpeg",
-        categoria: {
-            nombre: "Vinos Tintos",
-            id: "Vinos-Tintos"
-    },
-        precio:20000
-    },
-        {
-        id: "vino-04",
-        titulo: "Cansillero del diablo",
-        imagen: "./assets/img/Casillero del diablo.jpeg",
-        categoria: {
-            nombre: "Vinos Tintos",
-            id: "Vinos-Tintos"
-    },
-        precio:20000
-    },
-    //Vinos blancos
-    {
-        id: "vino-blanco-01",
-        titulo: "El Maestro Suavignon",
-        imagen: "./assets/img/El maestro Suavignon Blanc.jpeg",
-        categoria: {
-            nombre: "Vinos Blancos",
-            id: "Vinos-Blancos"
-    },
-        precio:10000
-    },
-    {
-        id: "vino-blanco-02",
-        titulo: "Principe de Viana Chardonnay",
-        imagen: "./assets/img/Príncipe de Viana Chardonnay.jpeg",
-        categoria: {
-            nombre: "Vinos Blancos",
-            id: "Vinos-Blancos"
-    },
-        precio:17000
-    },
-    //Espumosos
-       {
-        id: "vino-espumoso-01",
-        titulo: "Saurus Rose de Syrak",
-        imagen: "./assets/img/Vino SAURUS Rose de syrak.jpeg",
-        categoria: {
-            nombre: "Vinos Espumosos",
-            id: "Vinos-Espumosos"
-    },
-        precio:10000
-    },
-    {
-        id: "vino-espumoso-02",
-        titulo: "Riccadonna Prosecco Espumoso",
-        imagen: "./assets/img/VINO ESPUMOSO RICCADONNA PROSECCO 750 ML.jpeg",
-        categoria: {
-            nombre: "Vinos Espumosos",
-            id: "Vinos-Espumosos"
-    },
-        precio:20000
-    }
-];
+let productos = [];
+
+fetch("./productos.json")
+    .then(response => response.json())
+    .then(data => { 
+        productos = data;
+        cargarProductos(productos);
+     })
 
 const contenedorProductos = document.querySelector("#contenedor-productos");
 const botonesCategorias = document.querySelectorAll(".boton-categoria");
@@ -113,7 +36,6 @@ function cargarProductos(productosElegidos) {
     actualizarBotonesAgregar();
 }
 
-    cargarProductos(productos);
 
 botonesCategorias.forEach(boton => {
     boton.addEventListener("click" , (e) => {
@@ -155,6 +77,20 @@ if (productosEnCarritoLS) {
 
 
 function agregarAlCarrito(e){
+    Toastify({
+  text: "Agregado al carrito con exito :D",
+  duration: 3000,
+  newWindow: true,
+  close: true,
+  gravity: "top", // `top` or `bottom`
+  position: "right", // `left`, `center` or `right`
+  stopOnFocus: true, // Prevents dismissing of toast on hover
+  style: {
+    background: "linear-gradient(to right, #f5a0e4, #FFC5C5)",
+    borderRadius: "2rem",
+  },
+  onClick: function(){} // Callback after click
+}).showToast();
     const idBoton = e.currentTarget.id;
     const productoAgregado = productos.find(producto => producto.id === idBoton);
 

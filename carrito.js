@@ -84,9 +84,45 @@ function eliminarDelCarrito(e) {
 
 botonVaciar.addEventListener("click", vaciarCarrito);
 function vaciarCarrito() {
-  productosEnCarrito.length = 0;
+
+const swalWithBootstrapButtons = Swal.mixin({
+  customClass: {
+    confirmButton: "btn btn-success",
+    cancelButton: "btn btn-danger"
+  },
+  buttonsStyling: false
+});
+swalWithBootstrapButtons.fire({
+  title: "Estas seguro?",
+  text: "Se vaciaran tus vinos",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonText: "Si, borrar",
+  cancelButtonText: "No, continuar aqui",
+  reverseButtons: true
+}).then((result) => {
+  if (result.isConfirmed) {
+      productosEnCarrito.length = 0;
   localStorage.setItem("productos-en-carrito", JSON.stringify(productosEnCarrito));
   cargarProductosCarrito();
+    swalWithBootstrapButtons.fire({
+      title: "Eliminado",
+      text: "Se vacio tu carrito",
+      icon: "success"
+    });
+  } else if (
+    /* Read more about handling dismissals below */
+    result.dismiss === Swal.DismissReason.cancel
+  ) {
+    swalWithBootstrapButtons.fire({
+      title: "Cancelado",
+      text: "Tu carrito sigue en pie :)",
+      icon: "error"
+    });
+  }
+});
+
+
 }
 
 function actualizarTotal() {
